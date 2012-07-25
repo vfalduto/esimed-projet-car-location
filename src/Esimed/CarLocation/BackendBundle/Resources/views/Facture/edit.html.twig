@@ -1,0 +1,35 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<form action="{{ path('facture_update', {'id': entity.id}) }}" method="post" {{ form_enctype(form) }}>
+  <fieldset>
+  <legend>Facturation</legend>
+
+    {{ form_row(form.dateArriveEffectue) }}
+    {{ form_widget(form) }}
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Valider</button>
+        <a href="{{ path('location_show', {id: entity.location.id}) }}" class="btn">Annuler la facturation</a>
+    </div>
+  </fieldset>
+</form>
+
+{% endblock %}
+
+
+{% block foot_script %}
+{{ parent() }}
+
+<script language="javascript">
+    $(document).ready(function() {
+
+        $(".date input").datepicker({
+            dateFormat: 'dd/mm/yy',
+            firstDay:1,
+            minDate: new Date({{entity.location.dateDepart|date('Y, m-1, d')}})
+        }).attr("readonly","readonly");
+    });
+</script>
+
+{% endblock foot_script %}

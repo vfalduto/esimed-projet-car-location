@@ -1,0 +1,78 @@
+* {
+    margin: 0;
+}
+html, body {
+    height: 100%;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.navbar .nav > li > span {
+    display: block;
+    float: none;
+    padding: 10px 10px 11px;
+    line-height: 18px;
+    color:#FFF;
+    font-weight: bold;
+    text-decoration: none;
+}
+.layout-container {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -80px;
+}
+.content {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+.content .etat {
+    font-size: 18px;
+    float: right;
+    display: inline-block;
+}
+.content ul.nav_top  {
+    list-style-type: none;
+    font-size: 2.5em;
+}
+.content ul.nav_top li  {
+    margin: 15px;
+    padding: 15px;
+}
+.content ul.nav_top li:hover  {
+    background-color: #BBB;
+}
+
+footer, .push {
+    height: 80px;
+}
+footer {
+    background-color: #222;
+    color: #FFF;
+}
+footer p {
+    padding-top: 15px;
+}
+/** dataTable **/
+.dataTables_wrapper {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.dataTables_wrapper label input,.dataTables_wrapper  label textarea,.dataTables_wrapper  label select {
+    display: inline;
+}
+/** form-inline **/
+.form-inline div {
+    display: inline-block;
+}
+/**  form columns **/
+div.columns div.control-group  {
+    display: inline-block;
+    vertical-align: text-top;
+}
+#search-form-voiture div.columns div.control-group select {
+    width: 150px;
+}
+#search-form-voiture div.columns div.control-group  {
+    width: 150px;
+}

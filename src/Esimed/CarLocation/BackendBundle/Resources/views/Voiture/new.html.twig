@@ -1,0 +1,18 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<form action="{{ path('voiture_create') }}" method="post" {{ form_enctype(form) }}>
+  <fieldset>
+  <legend>Création d'un nouveau véhicule</legend>
+
+    {{ form_widget(form) }}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Ajouter un nouveau véhicule</button>
+                <a href="{{ path('voiture') }}" class="btn">
+    Retourner à la liste des véhicules
+</a>
+    </div>
+  </fieldset>
+</form>
+{% endblock %}
+

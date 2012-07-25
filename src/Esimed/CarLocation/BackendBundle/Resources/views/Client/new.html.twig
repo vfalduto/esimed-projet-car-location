@@ -1,0 +1,17 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<form action="{{ path('client_create') }}" method="post" {{ form_enctype(form) }}>
+  <fieldset>
+  <legend>Création d'un client</legend>
+
+    {{ form_widget(form) }}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+                <a href="{{ path('client') }}" class="btn">
+    Retourner à la liste des clients
+</a>
+    </div>
+  </fieldset>
+</form>
+{% endblock %}

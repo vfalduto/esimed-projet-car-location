@@ -1,0 +1,162 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<span class="etat alert alert-info" >Etat de la location : <strong>{{ entity.etat }}</strong></span>
+
+<table class="record_properties table table-bordered">
+    <tbody>
+        <tr>
+            <th>Client</th>
+            <td colspan="3">
+                {{ entity.client }} <br/>
+                Age : {{ entity.client.getAge }} ans - Ancienneté {{entity.client.getAgePermis}} ans
+            </td>
+            <td><a class="btn btn-info" href="{{path('client_show', {id:entity.client.id})}}">Détails</a></td>
+        </tr>
+    <tr>
+        <th>Catégorie</th>
+        <td>{{ entity.voiture.categorie }}</td>
+        <th>Véhicule</th>
+        <td>{{ entity.voiture }}</td>
+        <td><a class="btn btn-info" href="{{path('voiture_show', {id:entity.voiture.id})}}">Détails</a></td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="record_properties table table-bordered">
+<thead>
+    <tr>
+        <th>Date</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <th>Agence de depart</th>
+        <td>{{ entity.agenceDepart }}</td>
+
+        <th>Date de départ</th>
+        <td>{{ entity.dateDepart|date('d/m/Y H:i') }}</td>
+    </tr>
+    <tr>
+        <th>Agence d'arrivée</th>
+        <td>{{ entity.agenceArrive }}</td>
+
+        <th>Date d'arrivée</th>
+        <td>{{ entity.dateArrivee|date('d/m/Y H:i') }}</td>
+    </tr>
+</tbody>
+</table>
+
+{% if entity.isClientValid == false %}
+    <div class="alert alert-error">
+        <strong>Les informations du client ne sont pas complétes.</strong> <br/>
+        Veuillez saisir les bonnes informations.
+        <a class="btn" target="_blank" href="{{path('client_edit', {'id': entity.client.id})}}">Modifier les informations du client</a>
+
+    </div>
+{%elseif entity.isVehiculeValid == false %}
+<div class="alert alert-error">
+    <strong>Le véhicule sélectionné ne convient pas au client</strong>      <br/>
+    Le client n'as pas l'age et/ou l'ancienneté necessaire pour pouvoir louer ce véhicule.
+    <a class="btn" target="_blank" href="{{path('location_edit', {'id': entity.id})}}">Modifier la location</a>
+
+</div>
+{%else %}
+
+<table class="record_properties table table-bordered">
+    <thead>
+    <tr>
+        <th colspan="6">Facture</th>
+    </tr>
+    </thead>
+    <tbody>
+    {%if entity.facture != null %}
+    <tr>
+        <th colspan="4">{{ entity.facture }}</th>
+
+        {%if entity.isCanBeFacture %}
+            <td colspan="2"><a href="{{ path('facture_edit', {'facture': entity.facture.id}) }}" class="btn btn-info">Facturer</a></td>
+        {%else %}
+             <td colspan="2"><a href="{{ path('facture_pdf', {'id': entity.facture.id}) }}" class="btn btn-danger">Imprimer</a></td>
+        {%endif %}
+    </tr>
+        {%if not entity.isCanBeFacture %}
+        <tr>
+            <td>Kilométres effectués</td>
+            <td>{{ entity.facture.kmEffectue}} km</td>
+            <td>Date de retour</td>
+            <td>{{ entity.facture.dateArriveEffectue|date('d/m/Y')}}</td>
+            <td>Prix de la location / dépassement</td>
+            <td>{{ entity.facture.prixTotal }} € / {%if entity.facture.isDepassement %} oui {%else %} non {%endif%}</td>
+        </tr>
+        {% endif %}
+    {% endif %}
+    </tbody>
+</table>
+
+<table class="record_properties table table-bordered">
+    <thead>
+    <tr>
+        <th>Devis</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for devis in entity.devis %}
+    <tr>
+        <th rowspan="2">{{ devis }}</th>
+        <td>
+            {% set count = devis.lignesDevis|length  %}
+            {% transchoice count %}
+            {0} Aucun forfait sélectionné |{1} Un forfait sélectionné |]1,Inf] %count% forfaits sélectionnés
+            {% endtranschoice %}
+        </td>
+         <td>{{ devis.kmTotal }} Km</td>
+         <td>{{ devis.prixTotal }} €</td>
+         <td>{{ devis.updated|date('d/m/Y')}}</td>
+   </tr>
+    <tr>
+         <td colspan="5">
+             {%if entity.isCanBeCreateOrEditDevis %}
+             {% if devis.lignesDevis|length > 0 %}
+                <a href="{{ path('devis_select', {'devis': devis.id}) }}" class="btn btn-info">Sélectionner pour facture</a>
+             {% endif %}
+             <a href="{{ path('devis_edit', {'id': devis.id}) }}" class="btn btn-info">Modifier</a>
+             {% endif %}
+             <a href="{{ path('devis_pdf', {'id': devis.id}) }}" class="btn btn-danger">Imprimer</a>
+         </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{%if entity.isCanBeCreateOrEditDevis() %}
+<a href="{{ path('devis_create', {'location': entity.id}) }}" class="btn btn-info">Ajouter un devis</a>
+{% endif %}
+
+{%if entity.isCanBeModified() %}
+<a href="{{ path('location_edit', {'id': entity.id}) }}" class="btn btn-info">Modifier</a>
+{% endif %}
+
+{%endif%}
+
+{%if entity.isCanBeCloture() %}
+<a href="{{ path('location_cloture', {'id': entity.id}) }}" class="btn btn-info">Cloturer</a>
+{% endif %}
+{%if entity.isCanBeArchive() %}
+<a href="{{ path('location_archive', {'id': entity.id}) }}" class="btn btn-info">Archiver</a>
+{% endif %}
+<a href="{{ path('location') }}" class="btn">Retourner à la liste des locations</a>
+
+{%if entity.isCanBeDeleted() %}
+<form action="{{ path('location_delete', { 'id': entity.id }) }}" method="post">
+    <div class="form-actions">
+        {{ form_widget(delete_form) }}
+        <button type="submit" class="btn btn-danger">Supprimer</button>
+        Aucun devis validé, la location peux donc être supprimé à tout moment.
+    </div>
+</form>
+{% endif %}
+
+{% endblock %}
+
+

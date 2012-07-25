@@ -1,0 +1,82 @@
+<style type="text/css">
+    table tr th {
+        font-weight: bold;
+        font-size: 1.2em;
+        background-color: #AAA;
+        padding: 14px;
+        vertical-align: middle;
+        text-align: center;
+    }
+    .even {
+        background-color:  #DDD;
+    }
+    td {
+        padding: 10px;
+    }
+</style>
+
+<page backcolor="#FEFEFE"  backtop="0" backbottom="30mm" footer="date;heure;page" style="width:100%; font-size: 12pt">
+
+<table cellspacing="0" style="width: 100%; text-align: center; font-size: 14px">
+    <tr>
+        <td style="width: 75%;">
+        </td>
+        <td style="width: 25%; color: #444444; font-size: 52px">
+            DEVIS
+        </td>
+    </tr>
+</table>
+<br>
+<br>
+
+<p>
+    Numéro du devis : {{devis.id}} <br/>
+    Client : {{devis.location.client}} <br/>
+</p>
+
+<p>
+    Agence de départ : {{devis.location.agenceDepart }} <br/>
+    Agence d'arrivée :{{devis.location.agenceArrive }}  <br/>
+    date de départ : {{devis.location.dateDepart|date('d/m/Y') }} <br/>
+    date d'arrivée : {{devis.location.dateArrivee|date('d/m/Y') }} <br/>
+</p>
+<p>
+    Véhicule : {{devis.location.voiture}} <br/>
+    Categorie : {{devis.location.voiture.categorie}} <br/>
+</p>
+
+
+<table cellspacing="0" style="width: 100%; border: solid 1px black; background: #F7F7F7; text-align: center; font-size: 10pt;">
+    <tr>
+        <th>Période</th>
+        <th>Prix</th>
+        <th>Kilométre</th>
+    </tr>
+    {%set i = 0 %}
+    {% for ligne in devis.lignesDevis %}
+    <tr class="{%if i % 2 %} even {%endif%}">
+        <td style="width:50%;">{{ ligne.periode }}</td>
+        <td style="width:25%;">{{ ligne.prix }} €</td>
+        <td style="width:25%;"> {{ ligne.kmMax }} km</td>
+    </tr>
+    {% set i = i + 1 %}
+    {% endfor %}
+</table>
+
+    <p>
+        Prix Total <strong>{{devis.prixTotal}} €</strong>  <br/>
+        Kilométre Total <strong>{{devis.kmTotal}} km</strong>  <br/>
+    </p>
+
+    <table cellspacing="0" style="width: 100%; text-align: center; font-size: 14px">
+        <tr>
+            <td style="width: 50%;  text-align:center">
+                Signature du client
+            </td>
+            <td style="width: 50%;  text-align:center">
+                Signature de l'agent
+            </td>
+        </tr>
+    </table>
+
+</page>

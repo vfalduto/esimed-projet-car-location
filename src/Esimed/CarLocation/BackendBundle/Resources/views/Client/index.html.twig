@@ -1,0 +1,76 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+
+{% block content %}
+<h1>Liste des clients</h1>
+
+<table class="records_list table table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date d'obtention du permis</th>
+            <th>Date de naissance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td>{{ entity.nom }}</td>
+            <td>{{ entity.prenom }}</td>
+            <td>{% if entity.datePermis %}{{ entity.datePermis|date('d/m/Y') }}{% endif%}</td>
+            <td>{{ entity.dateNaissance|date('d/m/Y')  }}</td>
+            <td><a href="{{ path('client_show', { 'id': entity.id }) }}" class="btn btn-info">Afficher</a>
+                <a href="{{ path('client_edit', { 'id': entity.id }) }}" class="btn btn-info">Editer</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('client_new') }}"  class="btn primary">
+    Ajouter un nouveau client
+</a>
+{% endblock %}
+
+{% block foot_script %}
+{{ parent() }}
+
+<script language="javascript">
+
+    $(document).ready(function() {
+        $('.records_list').dataTable({
+                "aaSorting": [[ 1, "asc" ], [ 2, "asc" ]],
+                "bPaginate": true,
+                "bLengthChange": true,
+                "bFilter": true,
+                "bSort": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                "aoColumnDefs": [
+                    { "bSearchable": false, "aTargets": [ 4 ] }
+                ],
+                "oLanguage": {
+                    "sProcessing":     "Traitement en cours...",
+                    "sLengthMenu":     "Afficher _MENU_ éléments",
+                    "sZeroRecords":    "Aucun élément à afficher",
+                    "sInfo":           "Affichage de l'élement _START_ à _END_ sur _TOTAL_ éléments",
+                    "sInfoEmpty":      "Affichage de l'élement 0 à 0 sur 0 éléments",
+                    "sInfoFiltered":   "(filtré de _MAX_ éléments au total)",
+                    "sInfoPostFix":    "",
+                    "sSearch":         "Rechercher :",
+                    "sLoadingRecords": "Téléchargement...",
+                    "sUrl":            "",
+                    "oPaginate": {
+                        "sFirst":    "Premier",
+                        "sPrevious": "Précédent",
+                        "sNext":     "Suivant",
+                        "sLast":     "Dernier"
+                    }
+                }
+            }
+        );
+    } );
+</script>
+{% endblock foot_script %}

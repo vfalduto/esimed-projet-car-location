@@ -1,0 +1,91 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<h1>Véhicule</h1>
+<h2>{{ entity.marque }} {{ entity.modele }}</h2>
+
+
+{%if entity.disponible == false %}
+    <p class="alert alert-info">Le véhicule est réservé ou en location</p>
+</form>
+{%endif %}
+
+
+<table class="record_properties table table-bordered">
+    <tbody>
+        <tr class="important">
+            <th>Nombre d'année de permis requis</th>
+            <td>{{ entity.nbAnneePermis }} ans</td>
+        </tr>
+        <tr class="important">
+            <th>Age minimum</th>
+            <td>{{ entity.ageMinimum }} ans</td>
+        </tr>
+        <tr class="important">
+            <th>Localisation</th>
+            <td>{{ entity.localisation }} ans</td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="record_properties table table-bordered">
+    <tbody>
+    <tr>
+        <th>Type / Catégorie</th>
+        <td>{{ entity.categorie }}</td>
+    </tr>
+    <tr>
+        <th>Marque</th>
+        <td>{{ entity.marque }}</td>
+    </tr>
+    <tr>
+        <th>Modele</th>
+        <td>{{ entity.modele }}</td>
+    </tr>
+    <tr>
+        <th>Moteur</th>
+        <td>{{ entity.moteur }}</td>
+    </tr>
+    <tr>
+        <th>Boite à vitesse</th>
+        <td>{{ entity.boiteVitesse }}</td>
+    </tr>
+    <tr>
+        <th>Nombre de porte</th>
+        <td>{{ entity.nbPorte }}</td>
+    </tr>
+    <tr>
+        <th>Nombre de passager/bagages</th>
+        <td>{{ entity.nbPassager }}</td>
+    </tr>
+    <tr>
+        <th>Climatisation</th>
+        <td>{{ entity.climatisation }}</td>
+    </tr>
+    <tr>
+        <th>Equipement audio</th>
+        <td>{{ entity.equipement }}</td>
+    </tr>
+    <tr>
+        <th>Direction assistée</th>
+        <td>{{ entity.directionAssistee }}</td>
+    </tr>
+    </tbody>
+</table>
+
+
+<a href="{{ path('voiture') }}" class="btn">
+    Retourner à la liste des véhicules
+</a>
+    <a href="{{ path('voiture_edit', { 'id': entity.id }) }}" class="btn btn-primary">
+        Modifier
+    </a>
+    {%if delete_form != null %}
+    <form action="{{ path('voiture_delete', { 'id': entity.id }) }}" method="post">
+        <div class="form-actions">
+            {{ form_widget(delete_form) }}
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+        </div>
+    </form>
+    {%endif %}
+{% endblock %}

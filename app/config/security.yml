@@ -1,0 +1,41 @@
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+
+security:
+    providers:
+        fos_userbundle:
+            id: fos_user.user_manager
+
+    encoders:
+        "FOS\UserBundle\Model\UserInterface": sha512
+
+    role_hierarchy:
+        ROLE_USER: ROLE_USER
+
+    firewalls:
+        main:
+            pattern: ^/
+            form_login:
+                provider: fos_userbundle
+                csrf_provider: form.csrf_provider
+            logout:       true
+            anonymous:    true
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+    access_control:
+        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, role: ROLE_USER }
+        - { path: ^/resetting, role: ROLE_USER }
+        - { path: ^/$, role: ROLE_USER }
+        - { path: ^/default/, role: ROLE_USER }
+        - { path: ^/client/, role: ROLE_USER }
+        - { path: ^/admin/, role: ROLE_USER }
+        - { path: ^/client/, role: ROLE_USER }
+        - { path: ^/voiture/, role: ROLE_USER }
+        - { path: ^/location/, role: ROLE_USER }
+        - { path: ^/pdf/, role: ROLE_USER }
+        - { path: ^/facture/, role: ROLE_USER }
+        - { path: ^/devis/, role: ROLE_USER }

@@ -1,0 +1,575 @@
+<?php
+
+namespace Esimed\CarLocation\BackendBundle\Entity;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ExecutionContext;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Esimed\CarLocation\BackendBundle\Entity\Voiture
+ *
+ * @ORM\Table(name="voiture")
+ * @ORM\Entity
+ *
+ * @Assert\Callback(methods={"isPermisEtAgeValide"})
+ *
+ * @ORM\Entity(repositoryClass="VoitureRepository")
+ */
+class Voiture extends EntityArray
+{
+    /**
+     * @var integer $id
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var boolean $supprimee
+     *
+     * @ORM\Column(name="supprimee", type="boolean", nullable=false)
+     */
+    private $supprimee = false;
+
+    /**
+     * @var string $modele
+     *
+     * @ORM\Column(name="modele", type="string", length=45, nullable=false)
+     */
+    private $modele;
+
+    /**
+     * @var string $boiteVitesse
+     *
+     * @ORM\Column(name="boite_vitesse", type="string", length=45, nullable=true)
+     */
+    private $boiteVitesse;
+
+    /**
+     * @var string $nbPorte
+     *
+     * @ORM\Column(name="nb_porte", type="string", length=45, nullable=true)
+     */
+    private $nbPorte;
+
+    /**
+     * @var string $nbPassager
+     *
+     * @ORM\Column(name="nb_passager", type="string", length=45, nullable=true)
+     */
+    private $nbPassager;
+
+    /**
+     * @var string $climatisation
+     *
+     * @ORM\Column(name="climatisation", type="string", length=45, nullable=true)
+     */
+    private $climatisation;
+
+    /**
+     * @var string $equipement
+     *
+     * @ORM\Column(name="equipement", type="string", length=45, nullable=true)
+     */
+    private $equipement;
+
+    /**
+     * @var string $moteur
+     *
+     * @ORM\Column(name="moteur", type="string", length=45, nullable=true)
+     */
+    private $moteur;
+
+    /**
+     * @var string $directionAssistee
+     *
+     * @ORM\Column(name="direction_assistee", type="string", length=45, nullable=true)
+     */
+    private $directionAssistee;
+
+    /**
+     * @var integer $nbAnneePermis
+     *
+     * @ORM\Column(name="nb_annee_permis", type="integer", nullable=false)
+     */
+    private $nbAnneePermis;
+
+    /**
+     * @var integer $ageMinimum
+     * @Assert\Min(limit = "18", message = "L'âge minimum pour l'obtention du permis est 18 ans")
+     * @ORM\Column(name="age_minimum", type="integer", nullable=false)
+     */
+    private $ageMinimum;
+
+    /**
+     * @var Agence
+     *
+     * @ORM\ManyToOne(targetEntity="Agence")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="agence_id", referencedColumnName="id")
+     * })
+     */
+    private $agence;
+
+    /**
+     * @var Agence
+     *
+     * @ORM\ManyToOne(targetEntity="Agence")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="stationne_agence_id", referencedColumnName="id")
+     * })
+     */
+    private $stationneAgence;
+
+    /**
+     * @var Categorie
+     *
+     * @ORM\ManyToOne(targetEntity="Categorie")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
+     * })
+     */
+    private $categorie;
+
+    /**
+     * @var string $marque
+     *
+     * @ORM\Column(name="marque", type="string", length=255, nullable=false)
+     */
+    private $marque;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Location", mappedBy="voiture")
+     *
+     * @var ArrayCollection $locations
+     */
+    private $locations;
+
+    public function __toString() {
+        return $this->getMarque() . ' ' . $this->getModele();
+    }
+
+    public function __construct() {
+        $this->locations = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set supprimee
+     *
+     * @param boolean $supprimee
+     * @return Voiture
+     */
+    public function setSupprimee($supprimee)
+    {
+        $this->supprimee = $supprimee;
+        return $this;
+    }
+
+    /**
+     * Get supprimee
+     *
+     * @return boolean 
+     */
+    public function getSupprimee()
+    {
+        return $this->supprimee;
+    }
+
+    /**
+     * Set modele
+     *
+     * @param string $modele
+     * @return Voiture
+     */
+    public function setModele($modele)
+    {
+        $this->modele = $modele;
+        return $this;
+    }
+
+    /**
+     * Get modele
+     *
+     * @return string 
+     */
+    public function getModele()
+    {
+        return $this->modele;
+    }
+
+    /**
+     * Set boiteVitesse
+     *
+     * @param string $boiteVitesse
+     * @return Voiture
+     */
+    public function setBoiteVitesse($boiteVitesse)
+    {
+        $this->boiteVitesse = $boiteVitesse;
+        return $this;
+    }
+
+    /**
+     * Get boiteVitesse
+     *
+     * @return string 
+     */
+    public function getBoiteVitesse()
+    {
+        return $this->boiteVitesse;
+    }
+
+    /**
+     * Set nbPorte
+     *
+     * @param string $nbPorte
+     * @return Voiture
+     */
+    public function setNbPorte($nbPorte)
+    {
+        $this->nbPorte = $nbPorte;
+        return $this;
+    }
+
+    /**
+     * Get nbPorte
+     *
+     * @return string 
+     */
+    public function getNbPorte()
+    {
+        return $this->nbPorte;
+    }
+
+    /**
+     * Set nbPassager
+     *
+     * @param string $nbPassager
+     * @return Voiture
+     */
+    public function setNbPassager($nbPassager)
+    {
+        $this->nbPassager = $nbPassager;
+        return $this;
+    }
+
+    /**
+     * Get nbPassager
+     *
+     * @return string 
+     */
+    public function getNbPassager()
+    {
+        return $this->nbPassager;
+    }
+
+    /**
+     * Set climatisation
+     *
+     * @param string $climatisation
+     * @return Voiture
+     */
+    public function setClimatisation($climatisation)
+    {
+        $this->climatisation = $climatisation;
+        return $this;
+    }
+
+    /**
+     * Get climatisation
+     *
+     * @return string 
+     */
+    public function getClimatisation()
+    {
+        return $this->climatisation;
+    }
+
+    /**
+     * Set equipement
+     *
+     * @param string $equipement
+     * @return Voiture
+     */
+    public function setEquipement($equipement)
+    {
+        $this->equipement = $equipement;
+        return $this;
+    }
+
+    /**
+     * Get equipement
+     *
+     * @return string 
+     */
+    public function getEquipement()
+    {
+        return $this->equipement;
+    }
+
+    /**
+     * Set moteur
+     *
+     * @param string $moteur
+     * @return Voiture
+     */
+    public function setMoteur($moteur)
+    {
+        $this->moteur = $moteur;
+        return $this;
+    }
+
+    /**
+     * Get moteur
+     *
+     * @return string 
+     */
+    public function getMoteur()
+    {
+        return $this->moteur;
+    }
+
+    /**
+     * Set directionAssistee
+     *
+     * @param string $directionAssistee
+     * @return Voiture
+     */
+    public function setDirectionAssistee($directionAssistee)
+    {
+        $this->directionAssistee = $directionAssistee;
+        return $this;
+    }
+
+    /**
+     * Get directionAssistee
+     *
+     * @return string 
+     */
+    public function getDirectionAssistee()
+    {
+        return $this->directionAssistee;
+    }
+
+    /**
+     * Set nbAnneePermis
+     *
+     * @param integer $nbAnneePermis
+     * @return Voiture
+     */
+    public function setNbAnneePermis($nbAnneePermis)
+    {
+        $this->nbAnneePermis = $nbAnneePermis;
+        return $this;
+    }
+
+    /**
+     * Get nbAnneePermis
+     *
+     * @return integer 
+     */
+    public function getNbAnneePermis()
+    {
+        return $this->nbAnneePermis;
+    }
+
+    /**
+     * Set ageMinimum
+     *
+     * @param integer $ageMinimum
+     * @return Voiture
+     */
+    public function setAgeMinimum($ageMinimum)
+    {
+        $this->ageMinimum = $ageMinimum;
+        return $this;
+    }
+
+    /**
+     * Get ageMinimum
+     *
+     * @return integer 
+     */
+    public function getAgeMinimum()
+    {
+        return $this->ageMinimum;
+    }
+
+    /**
+     * Set agence
+     *
+     * @param Esimed\CarLocation\BackendBundle\Entity\Agence $agence
+     * @return Voiture
+     */
+    public function setAgence(\Esimed\CarLocation\BackendBundle\Entity\Agence $agence = null)
+    {
+        $this->agence = $agence;
+        return $this;
+    }
+
+    /**
+     * Get agence
+     *
+     * @return Esimed\CarLocation\BackendBundle\Entity\Agence 
+     */
+    public function getAgence()
+    {
+        return $this->agence;
+    }
+
+    /**
+     * Set stationneAgence
+     *
+     * @param Esimed\CarLocation\BackendBundle\Entity\Agence $stationneAgence
+     * @return Voiture
+     */
+    public function setStationneAgence(\Esimed\CarLocation\BackendBundle\Entity\Agence $stationneAgence = null)
+    {
+        $this->stationneAgence = $stationneAgence;
+        return $this;
+    }
+
+    /**
+     * Get stationneAgence
+     *
+     * @return Esimed\CarLocation\BackendBundle\Entity\Agence 
+     */
+    public function getStationneAgence()
+    {
+        return $this->stationneAgence;
+    }
+
+    /**
+     * Set categorie
+     *
+     * @param Esimed\CarLocation\BackendBundle\Entity\Categorie $categorie
+     * @return Voiture
+     */
+    public function setCategorie(\Esimed\CarLocation\BackendBundle\Entity\Categorie $categorie = null)
+    {
+        $this->categorie = $categorie;
+        return $this;
+    }
+
+    /**
+     * Get categorie
+     *
+     * @return Esimed\CarLocation\BackendBundle\Entity\Categorie 
+     */
+    public function getCategorie()
+    {
+        return $this->categorie;
+    }
+
+    /**
+     * Set marque
+     *
+     * @param string $marque
+     * @return Voiture
+     */
+    public function setMarque($marque = null)
+    {
+        $this->marque = $marque;
+        return $this;
+    }
+
+    /**
+     * Get marque
+     * @return  string
+     */
+    public function getMarque()
+    {
+        return $this->marque;
+    }
+
+    /**
+     * Add locations
+     *
+     * @param Esimed\CarLocation\BackendBundle\Entity\Location $locations
+     */
+    public function addLocation(\Esimed\CarLocation\BackendBundle\Entity\Location $locations)
+    {
+        $this->locations[] = $locations;
+    }
+
+    /**
+     * Get locations
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getLocations()
+    {
+        return $this->locations;
+    }
+
+    /************************************************************************************************************/
+
+    /**
+     * Vérifie si le véhicule peux être modifié
+     * @param Esimed\CarLocation\BackendBundle\Entity\Agent $agent
+     * @return boolean
+     */
+    public function canBeDeleted(Agent $agent) {
+        return !$this->getSupprimee() && $this->getAgence() == $agent->getAgence();
+    }
+
+    /**
+     * vérifie si le permis est valide
+     * @param \Symfony\Component\Validator\ExecutionContext $context
+     * @return bool
+     */
+    public function isPermisEtAgeValide(ExecutionContext $context) {
+        if ($this->getAgeMinimum() - $this->getNbAnneePermis() < 18) {
+            $context->addViolation(
+                'age minimum ou nombre d\'année d\'obtention du permis invalide : Le client ne peux avoir eu son permis avant ses 18 ans',
+                array(),
+                null
+            );
+        }
+    }
+
+    /**
+     * Retourne l'agence ou se trouve actuellement le véhicule
+     *
+     * @return string
+     */
+    public function getlocalisation() {
+        $location = null;
+        if (!$this->getDisponible(null, $location) && !$this->getSupprimee()) {
+            return "En location retour prévu : " . $location->getAgenceArrive()->__toString() . ' le ' . $location->getDateArrivee()->format("d/m/Y") .'';
+        }
+        return $this->getStationneAgence() ? $this->getStationneAgence()->__toString() : $this->getAgence()->__toString();
+    }
+
+    /**
+     * Get disponible
+     *
+     * @return boolean
+     */
+    public function getDisponible($current = null, Location &$loc = null)
+    {
+        !$current && $current = new \DateTime();
+        foreach ($this->getLocations() as $location ) {
+            if ($location->getDateDepart() <= $current && $location->getDateArrivee() >= $current) {
+                $loc = $location;
+                return false;
+            }
+        }
+        return true;
+    }
+
+}

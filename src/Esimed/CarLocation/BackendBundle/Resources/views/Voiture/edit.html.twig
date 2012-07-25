@@ -1,0 +1,17 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<form action="{{ path('voiture_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+  <fieldset>
+  <legend>Edition d'un véhicule</legend>
+  
+    {{ form_widget(edit_form) }}
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Modifier</button>
+                <a href="{{ path('voiture') }}" class="btn">
+    Retourner à la liste des véhicules
+</a>
+    </div>
+  </fieldset>  
+</form>
+{% endblock %}

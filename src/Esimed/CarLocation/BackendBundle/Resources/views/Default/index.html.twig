@@ -1,0 +1,15 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+Bienvenue : {{ app.user.username }}
+{% endif %}
+
+<ul class="nav_top">
+    <li><a href="{{ path('voiture') }}">Gestion du parc</a></li>
+    <li><a href="{{ path('client') }}">Gestion des clients</a></li>
+    <li><a href="{{ path('location') }}">Gestion des locations</a></li>
+</ul>
+
+{% endblock content %}

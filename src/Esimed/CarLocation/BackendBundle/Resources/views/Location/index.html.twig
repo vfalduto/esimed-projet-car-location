@@ -1,0 +1,80 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<h1>Liste des locations</h1>
+
+<a href="{{ path('location_new') }}"  class="btn primary">
+    Ajouter une nouvelle location
+</a>
+<table class="records_list table table-striped">
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Véhicule</th>
+            <th>Date de départ</th>
+            <th>Date d'arrivée</th>
+            <th>Etat</th>
+            <th>Date de création</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td>{{ entity.client }}</td>
+            <td>{{ entity.voiture }}</td>
+            <td>{% if entity.dateDepart %}{{ entity.dateDepart|date('d/m/Y H:i') }}{% endif%}</td>
+            <td>{% if entity.dateArrivee %}{{ entity.dateArrivee|date('d/m/Y H:i') }}{% endif%}</td>
+            <td>{{ entity.etat }}</td>
+            <td>{{ entity.created|date('d/m/Y')}}</td>
+            <td>
+                <a href="{{ path('location_show', { 'id': entity.id }) }}" class="btn btn-info">Afficher</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
+
+{% block foot_script %}
+{{ parent() }}
+
+<script language="javascript">
+    $(document).ready(function() {
+         var otable= $('.records_list').dataTable({
+                "aaSorting": [[ 5, "desc" ]],
+                "bPaginate": true,
+                "bLengthChange": true,
+                "bFilter": true,
+                "bSort": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                 "aoColumnDefs": [
+                     { "bSearchable": false, "aTargets": [ 6 ] }
+                 ],
+                "oLanguage": {
+                    "sProcessing":     "Traitement en cours...",
+                    "sLengthMenu":     "Afficher _MENU_ éléments",
+                    "sZeroRecords":    "Aucun élément à afficher",
+                    "sInfo":           "Affichage de l'élement _START_ à _END_ sur _TOTAL_ éléments",
+                    "sInfoEmpty":      "Affichage de l'élement 0 à 0 sur 0 éléments",
+                    "sInfoFiltered":   "(filtré de _MAX_ éléments au total)",
+                    "sInfoPostFix":    "",
+                    "sSearch":         "Rechercher :",
+                    "sLoadingRecords": "Téléchargement...",
+                    "sUrl":            "",
+                    "oPaginate": {
+                        "sFirst":    "Premier",
+                        "sPrevious": "Précédent",
+                        "sNext":     "Suivant",
+                        "sLast":     "Dernier"
+                    }
+                }
+
+            }
+        );
+    } );
+</script>
+{% endblock foot_script %}

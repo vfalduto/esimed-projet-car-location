@@ -1,0 +1,168 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<h1>Client</h1>
+
+<table class="record_properties table table-bordered">
+    <tbody>
+        <tr>
+            <th>Nom</th>
+            <td>{{ entity.nom }}</td>
+        </tr>
+        <tr>
+            <th>Prénom</th>
+            <td>{{ entity.prenom }}</td>
+        </tr>
+        <tr>
+            <th>Date de naissance</th>
+            <td>{{ entity.dateNaissance|date('d/m/Y')  }}</td>
+            <th>Age</th>
+            <td>{{ entity.getAge }} ans</td>
+        </tr>
+        <tr>
+            <th>Date d'obtention du permis</th>
+            <td>{% if entity.datePermis %}{{ entity.datePermis|date('d/m/Y') }}{% endif%}</td>
+            <th>Ancienneté</th>
+            <td>{{ entity.getAgePermis }} ans</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="form-actions">
+
+    <a href="{{ path('client_edit', { 'id': entity.id }) }}" class="btn btn-primary">
+        Editer
+    </a>
+    <a href="{{ path('client') }}" class="btn">
+        Retourner à la liste des clients
+    </a>
+
+    {%if delete_form != null %}
+    <form action="{{ path('client_delete', { 'id': entity.id }) }}" method="post">
+        <div class="form-actions">
+            {{ form_widget(delete_form) }}
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+        </div>
+    </form>
+    {%endif %}
+</div>
+
+<h2>Historique</h2>
+
+<h3>Location en cours</h3>
+<table class="records_list table table-striped">
+    <thead>
+    <tr>
+        <th>Véhicule</th>
+        <th>Date de départ</th>
+        <th>Date d'arrivée</th>
+        <th>Etat</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in encours %}
+    <tr>
+        <td>{{ entity.voiture }}</td>
+        <td>{% if entity.dateDepart %}{{ entity.dateDepart|date('d/m/Y H:i') }}{% endif%}</td>
+        <td>{% if entity.dateArrivee %}{{ entity.dateArrivee|date('d/m/Y H:i') }}{% endif%}</td>
+        <td>{{ entity.etat }}</td>
+        <td>
+            <a href="{{ path('location_show', { 'id': entity.id }) }}" class="btn btn-info">Afficher</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h3>Location futur</h3>
+<table  class=" records_list table table-striped">
+    <thead>
+    <tr>
+        <th>Véhicule</th>
+        <th>Date de départ</th>
+        <th>Date d'arrivée</th>
+        <th>Etat</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in futur %}
+    <tr>
+        <td>{{ entity.voiture }}</td>
+        <td>{% if entity.dateDepart %}{{ entity.dateDepart|date('d/m/Y H:i') }}{% endif%}</td>
+        <td>{% if entity.dateArrivee %}{{ entity.dateArrivee|date('d/m/Y H:i') }}{% endif%}</td>
+        <td>{{ entity.etat }}</td>
+        <td>
+            <a href="{{ path('location_show', { 'id': entity.id }) }}" class="btn btn-info">Afficher</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h3>Location terminé</h3>
+<table class="records_list table table-striped">
+    <thead>
+    <tr>
+        <th>Véhicule</th>
+        <th>Date de départ</th>
+        <th>Date d'arrivée</th>
+        <th>Etat</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in termine %}
+    <tr>
+        <td>{{ entity.voiture }}</td>
+        <td>{% if entity.dateDepart %}{{ entity.dateDepart|date('d/m/Y H:i') }}{% endif%}</td>
+        <td>{% if entity.dateArrivee %}{{ entity.dateArrivee|date('d/m/Y H:i') }}{% endif%}</td>
+        <td>{{ entity.etat }}</td>
+        <td>
+            <a href="{{ path('location_show', { 'id': entity.id }) }}" class="btn btn-info">Afficher</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+
+{% block foot_script %}
+{{ parent() }}
+
+<script language="javascript">
+
+    $(document).ready(function() {
+        $('.records_list').dataTable({
+                    "bPaginate": true,
+                    "bLengthChange": true,
+                    "bFilter": false,
+                    "bSort": false,
+                    "bInfo": false,
+                    "bAutoWidth": false,
+                    "oLanguage": {
+                        "sProcessing":     "Traitement en cours...",
+                        "sLengthMenu":     "Afficher _MENU_ éléments",
+                        "sZeroRecords":    "Aucun élément à afficher",
+                        "sInfo":           "Affichage de l'élement _START_ à _END_ sur _TOTAL_ éléments",
+                        "sInfoEmpty":      "Affichage de l'élement 0 à 0 sur 0 éléments",
+                        "sInfoFiltered":   "(filtré de _MAX_ éléments au total)",
+                        "sInfoPostFix":    "",
+                        "sSearch":         "Rechercher :",
+                        "sLoadingRecords": "Téléchargement...",
+                        "sUrl":            "",
+                        "oPaginate": {
+                            "sFirst":    "Premier",
+                            "sPrevious": "Précédent",
+                            "sNext":     "Suivant",
+                            "sLast":     "Dernier"
+                        }
+                    }
+                }
+        );
+    } );
+</script>
+{% endblock foot_script %}

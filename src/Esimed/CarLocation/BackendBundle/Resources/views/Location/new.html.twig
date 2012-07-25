@@ -1,0 +1,155 @@
+{% extends 'EsimedCarLocationBackendBundle::layout.html.twig' %}
+
+{% block content %}
+<form id="location_form" action="{{ path('location_create') }}" method="post" {{ form_enctype(form) }}
+      xmlns="http://www.w3.org/1999/html">
+  <fieldset>
+  <legend>Création d'une location</legend>
+
+      <div class="alert alert-info" >
+          <p>Liste des véhicules disponible pour cette location. La recherche prend en compte :
+          <ul>
+              <li>L'âge</li>
+              <li>La date d'obtention du permis</li>
+              <li>La disponibilité du véhicule</li>
+          </ul>
+          </p>
+
+          <p>Seul les clients ayant leurs date de permis renseigné sont disponible pour une location.</p>
+      </div>
+
+      {{ form_widget(form) }}
+
+      <div class="row-fluid show-grid">
+          <div class="span12">
+              <table class="records_list table table-striped">
+                  <thead>
+                  <tr>
+                      <th>Lieu</th>
+                      <th>Catégorie</th>
+                      <th>Marque</th>
+                      <th>Modéle</th>
+                      <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+          </div>
+
+      </div>
+
+    <div class="form-actions">
+        <a href="{{ path('location') }}" class="btn"> Retourner sur la liste des locations</a>
+    </div>
+  </fieldset>
+
+
+</form>
+{% endblock %}
+
+
+{% block foot_script %}
+{{ parent() }}
+
+<script language="javascript">
+
+    $(document).ready(function() {
+        var dataTable = $('table').dataTable({
+                    "bPaginate": false,
+                    "bLengthChange": true,
+                    "bFilter": false,
+                    "bSort": true,
+                    "bInfo": false,
+                    "bAutoWidth": true,
+                    "oLanguage": {
+                        "sProcessing":     "Traitement en cours...",
+                        "sLengthMenu":     "Afficher _MENU_ éléments",
+                        "sZeroRecords":    "Aucun élément à afficher",
+                        "sInfo":           "Affichage de l'élement _START_ à _END_ sur _TOTAL_ éléments",
+                        "sInfoEmpty":      "Affichage de l'élement 0 à 0 sur 0 éléments",
+                        "sInfoFiltered":   "(filtré de _MAX_ éléments au total)",
+                        "sInfoPostFix":    "",
+                        "sSearch":         "Rechercher :",
+                        "sLoadingRecords": "Téléchargement...",
+                        "sUrl":            "",
+                        "oPaginate": {
+                            "sFirst":    "Premier",
+                            "sPrevious": "Précédent",
+                            "sNext":     "Suivant",
+                            "sLast":     "Dernier"
+                        }
+                    }
+                }
+        );
+
+        var filter = function(evt) {
+            console.log('filter');
+            evt && evt.preventDefault();
+
+            $.ajax({
+                data: $('#location_form').serialize(),
+                dataType: 'json',
+                url:  "{{ path('location_filter') }}",
+                success: function(response) {
+                    console.log('success');
+
+                    dataTable.fnClearTable();
+                    $.each(response, function(idx, line) {
+                        var button =
+                                $("<span>")
+                                        .append($("<button>", { "value": line.id,  "class" : "vehicule-button btn btn-primary","type": "submit", "text": "Utiliser ce véhicule"}))
+                                        .append($("<a>", { "target": "_blank", "href": line.path_show}))
+                                .html();
+
+                        dataTable.fnAddData([
+                            line.localisation,
+                            line.categorie,
+                            line.marque,
+                            line.modele,
+                            button,
+                        ]);
+
+
+                    });
+                },
+                error: function(response) {
+
+                    console.log(response.responseText);
+                    //alert("Une erreur c'est produite durant la sélection des véhicules disponibles");
+                }
+            });
+        }
+
+        $('.chosen select').chosen();
+        $('select').bind('change', filter);
+        filter(null);
+
+        $('.vehicule-button').live('click', function(evt) {
+            evt.preventDefault();
+            var value =  $(evt.target).attr('value');
+            if (value) {
+                $('#location_form').attr('action', $('#location_form').attr('action') + '/voiture/' + value);
+                $('#location_form').submit();
+            }
+        });
+
+        $("#location_form").keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+
+        $(".date input").datepicker({
+            dateFormat: 'dd/mm/yy',
+            firstDay:1,
+            minDate: new Date(),
+            onSelect: function() {
+                filter();
+            }
+        }).attr("readonly","readonly");
+    });
+</script>
+
+{% endblock foot_script %}
+
